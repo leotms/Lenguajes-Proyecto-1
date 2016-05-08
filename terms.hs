@@ -13,6 +13,8 @@ data Term =  Var String
       | Ioi  Term Term
       | Nioi Term Term
 
+data Equation = Eq Term Term deriving Show
+
 -- Booleanos
 true :: Term
 true = Bool True
@@ -44,6 +46,11 @@ neg t1 = Neg t1
 -- Inequivalente
 (!<==>) :: Term -> Term -> Term
 (!<==>) t1 t2 = Nioi t1 t2
+
+-- Operador ===
+
+(===) :: Term -> Term -> Equation
+(===) t1 t2 = Eq t1 t2
 
 -- Terminos para el abecedario
 a :: Term
@@ -131,7 +138,7 @@ showTerm (Var x) = x
 showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ "\\/" ++ showTerm(Var y)
 showTerm (Or (Var x) term)    = showTerm(Var x) ++ "\\/" ++ "(" ++ showTerm(term) ++ ")"
 showTerm (Or term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ "\\/" ++ showTerm(Var x)
-showTerm (Or term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ "\\/" ++ "(" ++ showTerm(term2) ++ ")" 
+showTerm (Or term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ "\\/" ++ "(" ++ showTerm(term2) ++ ")"
 -- Expresiones con /\
 showTerm (And (Var x) (Var y)) = showTerm(Var x) ++ "/\\" ++ showTerm(Var y)
 showTerm (And (Var x) term)    = showTerm(Var x) ++ "/\\" ++ "(" ++ showTerm(term) ++ ")"
