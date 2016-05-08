@@ -13,7 +13,7 @@ data Term =  Var String
       | Ioi  Term Term
       | Nioi Term Term
 
-data Equation = Eq Term Term deriving Show
+data Equation = Eq Term Term
 
 -- Booleanos
 true :: Term
@@ -48,7 +48,6 @@ neg t1 = Neg t1
 (!<==>) t1 t2 = Nioi t1 t2
 
 -- Operador ===
-
 (===) :: Term -> Term -> Equation
 (===) t1 t2 = Eq t1 t2
 
@@ -164,3 +163,19 @@ showTerm (Nioi (Var x) term)    = showTerm(Var x) ++ "!<==>" ++ showTerm(term)
 showTerm (Nioi term1 term2)     = showTerm(term1) ++ "!<==>" ++ showTerm(term2)
 
 instance Show Term where show = showTerm
+
+-- Muestra una representacion de las expresiones con === en forma de string
+showEquation :: Equation -> String
+showEquation (Eq term1 term2) = showTerm(term1) ++ "===" ++ showTerm(term2)
+
+instance Show Equation where show = showEquation
+
+-- Definimos la precedencia de los operadores
+--infixl 4 neg 
+infixl 3 /\
+infixl 3 \/
+infixr 2 ==> 
+infixl 1 <==>
+infixl 1 !<==>
+infixl 0 ===
+
