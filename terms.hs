@@ -14,13 +14,14 @@ data Term =  Var Char
       | Nioi Term Term
       deriving Show
 
--- Operadores
+-- Booleanos
 true :: Term
 true = Bool True
 
 false :: Term
 false = Bool False
 
+-- Operadores
 -- Or
 (\/) :: Term -> Term -> Term
 (\/) t1 t2 = Or t1 t2
