@@ -1,4 +1,4 @@
--- Definicion de los Terminos Term
+-- Definicion de los Terminos Term, Equation
 -- Autores:
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
