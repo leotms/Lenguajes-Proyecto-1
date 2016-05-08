@@ -4,7 +4,8 @@
 -- Leonardo Martinez 11-10576
 
 -- Definicion de Term
-data Term = Var Char
+data Term =  Var Char
+      | Bool Bool
       | Or   Term Term
       | Neg  Term
       | And  Term Term
@@ -14,6 +15,11 @@ data Term = Var Char
       deriving Show
 
 -- Operadores
+true :: Term
+true = Bool True
+
+false :: Term
+false = Bool False
 
 -- Or
 (\/) :: Term -> Term -> Term
