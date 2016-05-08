@@ -4,7 +4,7 @@
 -- Leonardo Martinez 11-10576
 
 -- Definicion de Term
-data Term =  Var Char
+data Term =  Var String
       | Bool Bool
       | Or   Term Term
       | Neg  Term
@@ -12,7 +12,6 @@ data Term =  Var Char
       | Imp  Term Term
       | Ioi  Term Term
       | Nioi Term Term
-      deriving Show
 
 -- Booleanos
 true :: Term
@@ -48,79 +47,113 @@ neg t1 = Neg t1
 
 -- Terminos para el abecedario
 a :: Term
-a  = Var 'a'
+a = Var "a"
 
 b :: Term
-b  = Var 'b'
+b = Var "b"
 
 c :: Term
-c = Var 'c'
+c = Var "c"
 
 d :: Term
-d = Var 'd'
+d = Var "d"
 
 e :: Term
-e  = Var 'e'
+e = Var "e"
 
 f :: Term
-f  = Var 'f'
+f = Var "f"
 
 g :: Term
-g = Var 'g'
+g = Var "g"
 
 h :: Term
-h = Var 'h'
+h = Var "h"
 
 i :: Term
-i  = Var 'i'
+i = Var "i"
 
 j :: Term
-j  = Var 'j'
+j = Var "j"
 
 k :: Term
-k = Var 'k'
+k = Var "k"
 
 l :: Term
-l = Var 'l'
+l = Var "l"
 
 m :: Term
-m  = Var 'm'
+m = Var "m"
 
 n :: Term
-n  = Var 'n'
+n = Var "n"
 
 o :: Term
-o = Var 'o'
+o = Var "o"
 
 p :: Term
-p = Var 'p'
+p = Var "p"
 
 q :: Term
-q  = Var 'q'
+q = Var "q"
 
 r :: Term
-r  = Var 'r'
+r = Var "r"
 
 s :: Term
-s = Var 's'
+s = Var "s"
 
 t :: Term
-t = Var 't'
+t = Var "t"
 
 u :: Term
-u  = Var 'u'
+u = Var "u"
 
 v :: Term
-v  = Var 'v'
+v = Var "v"
 
 w :: Term
-w = Var 'w'
+w = Var "w"
 
 x :: Term
-x = Var 'x'
+x = Var "x"
 
 y :: Term
-y = Var 'y'
+y = Var "y"
 
 z :: Term
-z = Var 'z'
+z = Var "z"
+
+-- Muestra una representacion de las expresiones en forma de string
+showTerm :: Term -> String
+showTerm (Var x) = x
+-- Expresiones con \/
+showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ "\\/" ++ showTerm(Var y)
+showTerm (Or (Var x) term)    = showTerm(Var x) ++ "\\/" ++ "(" ++ showTerm(term) ++ ")"
+showTerm (Or term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ "\\/" ++ showTerm(Var x)
+showTerm (Or term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ "\\/" ++ "(" ++ showTerm(term2) ++ ")" 
+-- Expresiones con /\
+showTerm (And (Var x) (Var y)) = showTerm(Var x) ++ "/\\" ++ showTerm(Var y)
+showTerm (And (Var x) term)    = showTerm(Var x) ++ "/\\" ++ "(" ++ showTerm(term) ++ ")"
+showTerm (And term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ "/\\" ++ showTerm(Var x)
+showTerm (And term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ "/\\" ++ "(" ++ showTerm(term2) ++ ")"
+-- Expresiones con neg
+showTerm (Neg (Var x)) = "neg " ++ showTerm(Var x)
+showTerm (Neg term)    = "neg" ++ "(" ++ showTerm(term) ++ ")"
+-- Expresiones con ==>
+showTerm (Imp (Var x) (Var y)) = showTerm(Var x) ++ "==>" ++ showTerm(Var y)
+showTerm (Imp term (Var y))    = showTerm(term) ++ "==>" ++ showTerm(Var y)
+showTerm (Imp (Var x) term)    = showTerm(Var x) ++ "==>" ++ showTerm(term)
+showTerm (Imp term1 term2)     = showTerm(term1) ++ "==>" ++ showTerm(term2)
+-- Expresiones con <==>
+showTerm (Ioi (Var x) (Var y)) = showTerm(Var x) ++ "<==>" ++ showTerm(Var y)
+showTerm (Ioi term (Var y))    = showTerm(term) ++ "<==>" ++ showTerm(Var y)
+showTerm (Ioi (Var x) term)    = showTerm(Var x) ++ "<==>" ++ showTerm(term)
+showTerm (Ioi term1 term2)     = showTerm(term1) ++ "<==>" ++ showTerm(term2)
+-- Expresiones con !<==>
+showTerm (Nioi (Var x) (Var y)) = showTerm(Var x) ++ "!<==>" ++ showTerm(Var y)
+showTerm (Nioi term (Var y))    = showTerm(term) ++ "!<==>" ++ showTerm(Var y)
+showTerm (Nioi (Var x) term)    = showTerm(Var x) ++ "!<==>" ++ showTerm(term)
+showTerm (Nioi term1 term2)     = showTerm(term1) ++ "!<==>" ++ showTerm(term2)
+
+instance Show Term where show = showTerm
