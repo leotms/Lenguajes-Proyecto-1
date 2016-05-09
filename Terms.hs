@@ -8,15 +8,24 @@ module Terms where
 
 -- Definicion de Term
 data Term =  Var String
-      | Bool Bool
-      | Or   Term Term
-      | Neg  Term
-      | And  Term Term
-      | Imp  Term Term
-      | Ioi  Term Term
-      | Nioi Term Term
+        | Bool Bool
+        | Or   Term Term
+        | Neg  Term
+        | And  Term Term
+        | Imp  Term Term
+        | Ioi  Term Term
+        | Nioi Term Term
 
+-- Definicion de Equation
 data Equation = Eq Term Term
+
+-- Definicion de Sust
+data Sust = S1 (Term, Term) 
+        | S2 (Term, Sust, Term) deriving Show
+
+-- Funciones para Sust
+-- fst :: Sust -> Term
+-- fst s1 = 
 
 -- Booleanos
 true :: Term
