@@ -3,4 +3,4 @@
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
 
-import terms
+import Terms

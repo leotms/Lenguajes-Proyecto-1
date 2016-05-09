@@ -3,6 +3,9 @@
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
 
+-- Para que sea un modulo importable
+module Terms where 
+
 -- Definicion de Term
 data Term =  Var String
       | Bool Bool
