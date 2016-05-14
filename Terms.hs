@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 -- Definicion de los Terminos Term, Equation
 -- Autores:
 -- Aldrix Marfil     10-10940
@@ -16,16 +19,27 @@ data Term =  Var String
         | Ioi  Term Term
         | Nioi Term Term
 
--- Definicion de Equation
+-- Definicion de Equation --
 data Equation = Eq Term Term
 
--- Definicion de Sust
-data Sust = S1 (Term, Term)
-          | S2 (Term, Sust, Term) deriving Show
+-- Definicion de Sust --
+-- data Sust = S1 (Term, Term)
+--           | S2 (Term, Sust, Term) deriving Show
 
--- Funciones para Sust
--- fst :: Sust -> Term
--- fst s1 =
+-- type Sust = (Term,Term)
+
+data Sust = S1 (Term, Term) deriving Show
+
+
+-- Permite el polimorfismo de (=:)
+class Sustitution t p where
+  (=:) :: t -> p -> Sust
+
+instance Sustitution Term Term where
+  (=:) t p = S1 (t,p)
+
+-- instance Sustitution Term Term where
+--   (=:) t p = (S1 (Term, Term))
 
 -- Booleanos
 true :: Term
