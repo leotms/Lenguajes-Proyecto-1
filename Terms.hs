@@ -4,7 +4,7 @@
 -- Leonardo Martinez 11-10576
 
 -- Para que sea un modulo importable
-module Terms where 
+module Terms where
 
 -- Definicion de Term
 data Term =  Var String
@@ -20,12 +20,12 @@ data Term =  Var String
 data Equation = Eq Term Term
 
 -- Definicion de Sust
-data Sust = S1 (Term, Term) 
-        | S2 (Term, Sust, Term) deriving Show
+data Sust = S1 (Term, Term)
+          | S2 (Term, Sust, Term) deriving Show
 
 -- Funciones para Sust
 -- fst :: Sust -> Term
--- fst s1 = 
+-- fst s1 =
 
 -- Booleanos
 true :: Term
@@ -142,7 +142,19 @@ y = Var "y"
 z :: Term
 z = Var "z"
 
--- Muestra una representacion de las expresiones en forma de string
+-- Definimos la precedencia de los operadores
+infixl 9 `neg`
+infixl 3 /\
+infixl 3 \/
+infixr 2 ==>
+infixl 1 <==>
+infixl 1 !<==>
+infixl 0 ===
+
+-- Representacion en forma de String para los diferentes
+-- tipos de datos.
+
+-- Term --
 showTerm :: Term -> String
 showTerm (Var x) = x
 -- Expresiones con \/
@@ -176,18 +188,9 @@ showTerm (Nioi term1 term2)     = showTerm(term1) ++ "!<==>" ++ showTerm(term2)
 
 instance Show Term where show = showTerm
 
+-- Equation
 -- Muestra una representacion de las expresiones con === en forma de string
 showEquation :: Equation -> String
 showEquation (Eq term1 term2) = showTerm(term1) ++ "===" ++ showTerm(term2)
 
 instance Show Equation where show = showEquation
-
--- Definimos la precedencia de los operadores
---infixl 4 neg 
-infixl 3 /\
-infixl 3 \/
-infixr 2 ==> 
-infixl 1 <==>
-infixl 1 !<==>
-infixl 0 ===
-
