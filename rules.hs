@@ -46,6 +46,7 @@ instance Sustitution (Term, Term, Sust, Term, Term) where
 
 ---------------------------------------------------------------
 -- Instanciacion
+
 class Instantiate s where
 	instantiate :: Equation -> s -> Equation
 
@@ -57,3 +58,10 @@ instance Instantiate (Term, Sust, Term) where
 
 instance Instantiate (Term, Term, Sust, Term, Term) where
 	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
+
+---------------------------------------------------------------
+-- Leibniz
+
+leibniz :: Equation -> Term -> Term -> Equation
+leibniz (Eq t1 t2) e (Var z) = Eq (sust e (t1 =: (Var z))) (sust e (t2 =: (Var z)))
+
