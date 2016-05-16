@@ -60,7 +60,7 @@ instance Instantiate (Term, Term, Sust, Term, Term) where
 	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
 
 ---------------------------------------------------------------
--- Leibniz
+-- Regla de Leibniz
 
 leibniz :: Equation -> Term -> Term -> Equation
 leibniz (Eq t1 t2) e (Var z) = Eq (sust e (t1 =: (Var z))) (sust e (t2 =: (Var z)))
@@ -70,4 +70,21 @@ leibniz (Eq t1 t2) e (Var z) = Eq (sust e (t1 =: (Var z))) (sust e (t2 =: (Var z
 
 infer :: (Num n) => n -> Equation -> Sust -> Term -> Term -> Equation
 infer n eq s (Var z) e = leibniz (instantiate eq s) e (Var z)
+
+---------------------------------------------------------------
+-- Deduccion de un paso
+
+eq_izq :: Equation -> Term
+eq_izq (Eq t1 t2) = t1
+
+eq_der :: Equation -> Term
+eq_der (Eq t1 t2) = t2
+
+step :: (Num n) => Term -> n-> Equation -> Sust -> Term -> Term -> Either [Char] Term
+step t n eq s (Var z) e
+	| eq_izq x == t  = Right (eq_der x)
+	| eq_der x == t  = Right (eq_izq x)
+	| otherwise = Left "Error\n"
+	where x = infer n eq s (Var z) e
+
 
