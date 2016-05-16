@@ -43,3 +43,17 @@ instance Sustitution (Term, Term, Sust, Term, Term) where
 	sust (Imp t1 t2) s   = Imp (sust t1 s) (sust t2 s)
 	sust (Ioi t1 t2) s   = Ioi (sust t1 s) (sust t2 s)
 	sust (Nioi t1 t2) s  = Nioi (sust t1 s) (sust t2 s)
+
+---------------------------------------------------------------
+-- Instanciacion
+class Instantiate s where
+	instantiate :: Equation -> s -> Equation
+
+instance Instantiate Sust where
+	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
+
+instance Instantiate (Term, Sust, Term) where
+	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
+
+instance Instantiate (Term, Term, Sust, Term, Term) where
+	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
