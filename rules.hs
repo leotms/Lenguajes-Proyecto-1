@@ -65,3 +65,9 @@ instance Instantiate (Term, Term, Sust, Term, Term) where
 leibniz :: Equation -> Term -> Term -> Equation
 leibniz (Eq t1 t2) e (Var z) = Eq (sust e (t1 =: (Var z))) (sust e (t2 =: (Var z)))
 
+---------------------------------------------------------------
+-- Inferencia
+
+infer :: (Num n) => n -> Equation -> Sust -> Term -> Term -> Equation
+infer n eq s (Var z) e = leibniz (instantiate eq s) e (Var z)
+
