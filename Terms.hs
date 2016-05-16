@@ -18,28 +18,16 @@ data Term =  Var String
         | Imp  Term Term
         | Ioi  Term Term
         | Nioi Term Term
+        deriving Eq
 
 -- Definicion de Equation --
-data Equation = Eq Term Term
+data Equation = Eq Term Term 
 
--- Definicion de Sust --
--- data Sust = S1 (Term, Term)
---           | S2 (Term, Sust, Term) deriving Show
+type Sust = (Term,Term)
 
--- type Sust = (Term,Term)
-
-data Sust = S1 (Term, Term) deriving Show
-
-
--- Permite el polimorfismo de (=:)
-class Sustitution t p where
-  (=:) :: t -> p -> Sust
-
-instance Sustitution Term Term where
-  (=:) t p = S1 (t,p)
-
--- instance Sustitution Term Term where
---   (=:) t p = (S1 (Term, Term))
+-- Operador Sustitucion 
+(=:) :: Term -> Term -> Sust
+(=:) t1 t2 = (t1, t2)
 
 -- Booleanos
 true :: Term
@@ -172,39 +160,47 @@ infixl 0 ===
 showTerm :: Term -> String
 showTerm (Var x) = x
 -- Expresiones con \/
-showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ "\\/" ++ showTerm(Var y)
-showTerm (Or (Var x) term)    = showTerm(Var x) ++ "\\/" ++ "(" ++ showTerm(term) ++ ")"
-showTerm (Or term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ "\\/" ++ showTerm(Var x)
-showTerm (Or term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ "\\/" ++ "(" ++ showTerm(term2) ++ ")"
+showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ " \\/ " ++ showTerm(Var y)
+showTerm (Or (Var x) term)    = showTerm(Var x) ++ " \\/ " ++ "(" ++ showTerm(term) ++ ")"
+showTerm (Or term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ " \\/ " ++ showTerm(Var x)
+showTerm (Or term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ " \\/ " ++ "(" ++ showTerm(term2) ++ ")"
 -- Expresiones con /\
-showTerm (And (Var x) (Var y)) = showTerm(Var x) ++ "/\\" ++ showTerm(Var y)
-showTerm (And (Var x) term)    = showTerm(Var x) ++ "/\\" ++ "(" ++ showTerm(term) ++ ")"
-showTerm (And term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ "/\\" ++ showTerm(Var x)
-showTerm (And term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ "/\\" ++ "(" ++ showTerm(term2) ++ ")"
+showTerm (And (Var x) (Var y)) = showTerm(Var x) ++ " /\\ " ++ showTerm(Var y)
+showTerm (And (Var x) term)    = showTerm(Var x) ++ " /\\ " ++ "(" ++ showTerm(term) ++ ")"
+showTerm (And term (Var x))    = "(" ++ showTerm(term) ++ ")" ++ " /\\ " ++ showTerm(Var x)
+showTerm (And term1 term2)     = "(" ++ showTerm(term1) ++ ")" ++ " /\\ " ++ "(" ++ showTerm(term2) ++ ")"
 -- Expresiones con neg
 showTerm (Neg (Var x)) = "neg " ++ showTerm(Var x)
 showTerm (Neg term)    = "neg" ++ "(" ++ showTerm(term) ++ ")"
 -- Expresiones con ==>
-showTerm (Imp (Var x) (Var y)) = showTerm(Var x) ++ "==>" ++ showTerm(Var y)
-showTerm (Imp term (Var y))    = showTerm(term) ++ "==>" ++ showTerm(Var y)
-showTerm (Imp (Var x) term)    = showTerm(Var x) ++ "==>" ++ showTerm(term)
-showTerm (Imp term1 term2)     = showTerm(term1) ++ "==>" ++ showTerm(term2)
+showTerm (Imp (Var x) (Var y)) = showTerm(Var x) ++ " ==> " ++ showTerm(Var y)
+showTerm (Imp term (Var y))    = showTerm(term) ++ " ==> " ++ showTerm(Var y)
+showTerm (Imp (Var x) term)    = showTerm(Var x) ++ " ==> " ++ showTerm(term)
+showTerm (Imp term1 term2)     = showTerm(term1) ++ " ==> " ++ showTerm(term2)
 -- Expresiones con <==>
-showTerm (Ioi (Var x) (Var y)) = showTerm(Var x) ++ "<==>" ++ showTerm(Var y)
-showTerm (Ioi term (Var y))    = showTerm(term) ++ "<==>" ++ showTerm(Var y)
-showTerm (Ioi (Var x) term)    = showTerm(Var x) ++ "<==>" ++ showTerm(term)
-showTerm (Ioi term1 term2)     = showTerm(term1) ++ "<==>" ++ showTerm(term2)
+showTerm (Ioi (Var x) (Var y)) = showTerm(Var x) ++ " <==> " ++ showTerm(Var y)
+showTerm (Ioi term (Var y))    = showTerm(term) ++ " <==> " ++ showTerm(Var y)
+showTerm (Ioi (Var x) term)    = showTerm(Var x) ++ " <==> " ++ showTerm(term)
+showTerm (Ioi term1 term2)     = showTerm(term1) ++ " <==> " ++ showTerm(term2)
 -- Expresiones con !<==>
-showTerm (Nioi (Var x) (Var y)) = showTerm(Var x) ++ "!<==>" ++ showTerm(Var y)
-showTerm (Nioi term (Var y))    = showTerm(term) ++ "!<==>" ++ showTerm(Var y)
-showTerm (Nioi (Var x) term)    = showTerm(Var x) ++ "!<==>" ++ showTerm(term)
-showTerm (Nioi term1 term2)     = showTerm(term1) ++ "!<==>" ++ showTerm(term2)
+showTerm (Nioi (Var x) (Var y)) = showTerm(Var x) ++ " !<==> " ++ showTerm(Var y)
+showTerm (Nioi term (Var y))    = showTerm(term) ++ "! <==> " ++ showTerm(Var y)
+showTerm (Nioi (Var x) term)    = showTerm(Var x) ++ " !<==> " ++ showTerm(term)
+showTerm (Nioi term1 term2)     = showTerm(term1) ++ " !<==> " ++ showTerm(term2)
 
 instance Show Term where show = showTerm
 
 -- Equation
 -- Muestra una representacion de las expresiones con === en forma de string
 showEquation :: Equation -> String
-showEquation (Eq term1 term2) = showTerm(term1) ++ "===" ++ showTerm(term2)
+showEquation (Eq term1 term2) = showTerm(term1) ++ " === " ++ showTerm(term2)
 
 instance Show Equation where show = showEquation
+
+-- Sustitution
+-- Muestra una representacion de las expresiones con =: en forma de string
+
+--showSust :: Sust -> String
+--showSust (term1,term2) = showTerm(term1) ++ "=:" ++ showTerm(term2)
+
+--instance Show Sust where show = showSust
