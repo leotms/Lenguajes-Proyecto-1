@@ -8,6 +8,7 @@
 
 -- Modulos necesarios
 import Terms
+import Theorems
 
 -- Funciones para la Sustitucion
 
@@ -91,27 +92,27 @@ eq_izq (Eq t1 t2) = t1
 eq_der :: Equation -> Term
 eq_der (Eq t1 t2) = t2
 
-step :: (Num n) => Term -> n-> Equation -> Sust -> Term -> Term -> Term
+step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
 step t n eq s (Var z) e
 	| eq_izq x == t  = eq_der x
 	| eq_der x == t  = eq_izq x
-	| otherwise = error "Error\n"
+	| otherwise = error "Invalid inference rule.\n"
 	where x = infer n eq s (Var z) e
 
 ---------------------------------------------------------------
 	-- Funciones Dummy
 
 -- recibe un z y retorna el z
-lambda :: (z) -> z
-lambda z = z
+lambda :: String
+lambda  = "lambda"
 
 -- recibe un lambda y retorna lambda
-using :: (l) -> l
-using l = l
+using :: String
+using  = "using"
 
 -- recibe una Sust y retorna una Sust
-with :: (s) -> s
-with s = s
+with :: String
+with  = "with"
 
--- statement :: Term -> IO (Term)
--- statement t
+statement :: Term -> Float -> String -> Sust -> String -> String -> Term -> Term -> IO (Term)
+statement t0 n w s u l t1 t2 = return (step t0 n (prop n) s t1 t2)
