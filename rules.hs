@@ -6,6 +6,8 @@
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
 
+module Rules where
+
 -- Modulos necesarios
 import Terms
 import Theorems
@@ -71,16 +73,16 @@ leibniz (Eq t1 t2) e (Var z) = Eq (sust e (t1 =: (Var z))) (sust e (t2 =: (Var z
 
 -- Clase polimorfica de Inferencia, para los diferentes sust.
 class Inference s where
-	infer :: (Num n) => n -> Equation -> s -> Term -> Term -> Equation
+	infer :: Float -> s -> Term -> Term -> Equation
 
 instance Inference Sust where
-	infer n eq s (Var z) e = leibniz (instantiate eq s) e (Var z)
+	infer n s (Var z) e = leibniz (instantiate (prop n) s) e (Var z)
 
 instance Inference (Term, Sust, Term) where
-	infer n eq s (Var z) e = leibniz (instantiate eq s) e (Var z)
+	infer n s (Var z) e = leibniz (instantiate (prop n) s) e (Var z)
 
 instance Inference (Term, Term, Sust, Term, Term) where
-	infer n eq s (Var z) e = leibniz (instantiate eq s) e (Var z)
+	infer n s (Var z) e = leibniz (instantiate (prop n) s) e (Var z)
 
 ---------------------------------------------------------------
 -- Deduccion de un paso
@@ -92,15 +94,15 @@ eq_izq (Eq t1 t2) = t1
 eq_der :: Equation -> Term
 eq_der (Eq t1 t2) = t2
 
-step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
-step t n eq s (Var z) e
+step :: Term -> Float -> Sust -> Term -> Term -> Term
+step t n s (Var z) e
 	| eq_izq x == t  = eq_der x
 	| eq_der x == t  = eq_izq x
 	| otherwise = error "Invalid inference rule.\n"
-	where x = infer n eq s (Var z) e
+	where x = infer n s (Var z) e
 
 ---------------------------------------------------------------
-	-- Funciones Dummy
+-- Funciones Dummy
 
 -- recibe un z y retorna el z
 lambda :: String
@@ -114,5 +116,10 @@ using  = "using"
 with :: String
 with  = "with"
 
-statement :: Term -> Float -> String -> Sust -> String -> String -> Term -> Term -> IO (Term)
-statement t0 n w s u l t1 t2 = return (step t0 n (prop n) s t1 t2)
+statement :: Term -> Float -> String -> Sust -> String -> String -> Term -> Term -> IO Term
+statement t0 n w s u l t1 t2 = do {print("===<statement " ++ show(n) ++ " " ++ w ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>") ;
+								   return (step t0 n s t1 t2)}
+
+proof :: Equation -> Term
+proof eq = eq_izq eq
+
