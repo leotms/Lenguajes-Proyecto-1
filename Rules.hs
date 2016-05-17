@@ -20,6 +20,7 @@ class Sustitution s where
 instance Sustitution Sust where
 	-- caso base
 	sust (Var t) (x,p)   = if (Var t) == p then x else (Var t)
+	sust (Bool b)   s    = Bool b
 	sust (Or t1 t2) s    = Or (sust t1 s) (sust t2 s)
 	sust (And t1 t2) s   = And (sust t1 s) (sust t2 s)
 	sust (Neg t1) s      = Neg (sust t1 s)
@@ -30,6 +31,7 @@ instance Sustitution Sust where
 instance Sustitution (Term, Sust, Term) where
 	-- caso base
 	sust (Var t) (x, (y,p), q) = if (Var t) ==  p then y else if (Var t) == q then x else (Var t)
+	sust (Bool b)   s    = Bool b
 	sust (Or t1 t2) s    = Or (sust t1 s) (sust t2 s)
 	sust (And t1 t2) s   = And (sust t1 s) (sust t2 s)
 	sust (Neg t1) s      = Neg (sust t1 s)
@@ -40,6 +42,7 @@ instance Sustitution (Term, Sust, Term) where
 instance Sustitution (Term, Term, Sust, Term, Term) where
 	-- caso base
 	sust (Var t) (x, y, (z,p), q, r) = if (Var t) == p then z else if (Var t) == q then y else if (Var t) == r then x else (Var t)
+	sust (Bool b)   s    = Bool b
 	sust (Or t1 t2) s    = Or (sust t1 s) (sust t2 s)
 	sust (And t1 t2) s   = And (sust t1 s) (sust t2 s)
 	sust (Neg t1) s      = Neg (sust t1 s)
@@ -94,12 +97,29 @@ eq_izq (Eq t1 t2) = t1
 eq_der :: Equation -> Term
 eq_der (Eq t1 t2) = t2
 
-step :: Term -> Float -> Sust -> Term -> Term -> Term
-step t n s (Var z) e
-	| eq_izq x == t  = eq_der x
-	| eq_der x == t  = eq_izq x
-	| otherwise = error "Invalid inference rule.\n"
-	where x = infer n s (Var z) e
+class Step s where
+	step :: Term -> Float -> s -> Term -> Term -> Term
+
+instance Step Sust where
+	step t n s (Var z) e
+		| eq_izq x == t  = eq_der x
+		| eq_der x == t  = eq_izq x
+		| otherwise = error "Invalid inference rule.\n"
+		where x = infer n s (Var z) e
+
+instance Step (Term, Sust, Term) where
+	step t n s (Var z) e
+		| eq_izq x == t  = eq_der x
+		| eq_der x == t  = eq_izq x
+		| otherwise = error "Invalid inference rule.\n"
+		where x = infer n s (Var z) e
+
+instance Step (Term, Term, Sust, Term, Term) where
+	step t n s (Var z) e
+		| eq_izq x == t  = eq_der x
+		| eq_der x == t  = eq_izq x
+		| otherwise = error "Invalid inference rule.\n"
+		where x = infer n s (Var z) e
 
 ---------------------------------------------------------------
 -- Funciones Dummy
@@ -116,10 +136,23 @@ using  = "using"
 with :: String
 with  = "with"
 
-statement :: Term -> Float -> String -> Sust -> String -> String -> Term -> Term -> IO Term
-statement t0 n w s u l t1 t2 = do {print("===<statement " ++ show(n) ++ " " ++ w ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>") ;
-								   return (step t0 n s t1 t2)}
+class Statement s where
+	statement :: Float -> String -> s -> String -> String -> Term -> Term -> Term -> IO Term
 
-proof :: Equation -> Term
-proof eq = eq_izq eq
+instance Statement Sust where
+	statement n w s u l t1 t2 t0 = do { putStrLn "=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ show(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>" ;
+								   		return (step t0 n s t1 t2)}
+instance Statement (Term, Sust, Term) where
+	statement n w s u l t1 t2 t0 = do { putStrLn "=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ show(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>" ;
+								   		return (step t0 n s t1 t2)}
+
+instance Statement (Term, Term, Sust, Term, Term) where
+	statement n w s u l t1 t2 t0 = do { putStrLn "=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ show(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>" ;
+								   		return (step t0 n s t1 t2)}
+
+proof :: Equation -> IO Term
+proof eq = return (eq_izq eq)
+
+done ::  Equation -> Term -> IO () 	
+done eq end = if eq_der eq == end then putStrLn "proof successful" else putStrLn "proof unsuccessful"  
 

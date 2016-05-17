@@ -37,10 +37,10 @@ type Sust = (Term,Term)
 
 -- Booleanos
 true :: Term
-true = Bool "True"
+true = Bool "true"
 
 false :: Term
-false = Bool "False"
+false = Bool "false"
 
 -- Or
 (\/) :: Term -> Term -> Term
@@ -174,6 +174,8 @@ infixl 0 ===
 showTerm :: Term -> String
 showTerm (Var x) = x
 
+showTerm (Bool x) = x
+
 -- Expresiones con \/
 showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ " \\/ " ++ showTerm(Var y)
 showTerm (Or (Var x) term)    = showTerm(Var x) ++ " \\/ " ++ "(" ++ showTerm(term) ++ ")"
@@ -223,7 +225,17 @@ instance Show Equation where show = showEquation
 -- Sustitution
 -- Muestra una representacion de las expresiones con =: en forma de string
 
---showSust :: Sust -> String
---showSust (term1,term2) = "( " ++ showTerm(term1) ++ " =: " ++ showTerm(term2) ++ " )"
+showSust :: Sust -> String
+showSust (term1,term2) = "( " ++ showTerm(term1) ++ " =: " ++ showTerm(term2) ++ " )"
 
---instance Show Sust where show = showSust
+showSust2 :: (Term, Sust, Term) -> String
+showSust2 (term1, s, term2) = "( " ++ showTerm(term1) ++ "," ++ showSust(s) ++ "," ++ showTerm(term2) ++ " )"
+
+showSust3 :: (Term, Term, Sust, Term, Term) -> String
+showSust3 (term1,term2, s, term3,term4) = "( " ++ showTerm(term1) ++ "," ++ showTerm(term2) ++ "," 
+												++ showSust(s) ++ "," ++ showTerm(term3) ++ ","++ showTerm(term4) ++ " )"
+
+
+instance Show Sust where show = showSust
+instance Show (Term, Show, Term) where show = showSust2
+instance Show (Term, Term, Show, Term, Term) where show = showSust3
