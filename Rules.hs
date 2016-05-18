@@ -1,14 +1,18 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
--- Definicion de las reglas para la deduccion logica
+-- Definicion de las reglas para la deduccion logica y verificacion de teoremas.
 -- Autores:
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
 
 module Rules where
 
--- Modulos necesarios
+-- Modulos necesarios:
+-- Terms:    Contiene las definiciones de terminos, tipos y sus impresiones.
+-- Theorems: Contiene las definiciones de los teoremas y axiomas necesarios
+--           para las demostraciones.
+
 import Terms
 import Theorems
 
@@ -28,7 +32,7 @@ instance Sustitution Sust where
 	sust (Ioi t1 t2) s   = Ioi (sust t1 s) (sust t2 s)
 	sust (Nioi t1 t2) s  = Nioi (sust t1 s) (sust t2 s)
 
-instance Sustitution (Term, Sust, Term) where
+instance Sustitution Sust2 where
 	-- caso base
 	sust (Var t) (x, (y,p), q) = if (Var t) ==  p then y else if (Var t) == q then x else (Var t)
 	sust (Bool b)   s    = Bool b
@@ -39,7 +43,7 @@ instance Sustitution (Term, Sust, Term) where
 	sust (Ioi t1 t2) s   = Ioi (sust t1 s) (sust t2 s)
 	sust (Nioi t1 t2) s  = Nioi (sust t1 s) (sust t2 s)
 
-instance Sustitution (Term, Term, Sust, Term, Term) where
+instance Sustitution Sust3 where
 	-- caso base
 	sust (Var t) (x, y, (z,p), q, r) = if (Var t) == p then z else if (Var t) == q then y else if (Var t) == r then x else (Var t)
 	sust (Bool b)   s    = Bool b
@@ -59,10 +63,10 @@ class Instantiate s where
 instance Instantiate Sust where
 	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
 
-instance Instantiate (Term, Sust, Term) where
+instance Instantiate Sust2 where
 	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
 
-instance Instantiate (Term, Term, Sust, Term, Term) where
+instance Instantiate Sust3 where
 	instantiate (Eq t1 t2) s = Eq (sust t1 s) (sust t2 s)
 
 ---------------------------------------------------------------
@@ -81,10 +85,10 @@ class Inference s where
 instance Inference Sust where
 	infer n s (Var z) e = leibniz (instantiate (prop n) s) e (Var z)
 
-instance Inference (Term, Sust, Term) where
+instance Inference Sust2 where
 	infer n s (Var z) e = leibniz (instantiate (prop n) s) e (Var z)
 
-instance Inference (Term, Term, Sust, Term, Term) where
+instance Inference Sust3 where
 	infer n s (Var z) e = leibniz (instantiate (prop n) s) e (Var z)
 
 ---------------------------------------------------------------
@@ -107,14 +111,14 @@ instance Step Sust where
 		| otherwise = error "Invalid inference rule.\n"
 		where x = infer n s (Var z) e
 
-instance Step (Term, Sust, Term) where
+instance Step Sust2 where
 	step t n s (Var z) e
 		| eq_izq x == t  = eq_der x
 		| eq_der x == t  = eq_izq x
 		| otherwise = error "Invalid inference rule.\n"
 		where x = infer n s (Var z) e
 
-instance Step (Term, Term, Sust, Term, Term) where
+instance Step Sust3 where
 	step t n s (Var z) e
 		| eq_izq x == t  = eq_der x
 		| eq_der x == t  = eq_izq x
@@ -140,19 +144,23 @@ class Statement s where
 	statement :: Float -> String -> s -> String -> String -> Term -> Term -> Term -> IO Term
 
 instance Statement Sust where
-	statement n w s u l t1 t2 t0 = do { putStrLn "=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ show(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>" ;
-								   		return (step t0 n s t1 t2)}
-instance Statement (Term, Sust, Term) where
-	statement n w s u l t1 t2 t0 = do { putStrLn "=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ show(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>" ;
-								   		return (step t0 n s t1 t2)}
+	statement n w s u l t1 t2 t0 = do { putStrLn ("=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ showSust(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>") ;
+																			putStrLn (showTerm(step t0 n s t1 t2));
+																			return (step t0 n s t1 t2)}
+instance Statement Sust2 where
+	statement n w s u l t1 t2 t0 = do { putStrLn ("=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ showSust(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>") ;
+																			putStrLn (showTerm(step t0 n s t1 t2));
+																			return (step t0 n s t1 t2)}
 
-instance Statement (Term, Term, Sust, Term, Term) where
-	statement n w s u l t1 t2 t0 = do { putStrLn "=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ show(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>" ;
-								   		return (step t0 n s t1 t2)}
+instance Statement Sust3 where
+	statement n w s u l t1 t2 t0 = do { putStrLn ("=== <statement " ++ show(n) ++ " " ++ w ++ " " ++ showSust(s) ++ " " ++ l ++ " " ++ showTerm(t1) ++ " (" ++ showTerm(t2) ++ ")>") ;
+																			putStrLn (showTerm(step t0 n s t1 t2));
+																			return (step t0 n s t1 t2)}
 
 proof :: Equation -> IO Term
-proof eq = return (eq_izq eq)
+proof eq = do {putStrLn ("prooving " ++ show(eq) ++ "\n");
+               putStrLn (showTerm(eq_izq eq));
+							 return (eq_izq eq)}
 
-done ::  Equation -> Term -> IO () 	
-done eq end = if eq_der eq == end then putStrLn "proof successful" else putStrLn "proof unsuccessful"  
-
+done ::  Equation -> Term -> IO ()
+done eq end = if eq_der eq == end then putStrLn "\n proof successful" else putStrLn "\n proof unsuccessful"

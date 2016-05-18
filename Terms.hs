@@ -1,7 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
--- Definicion de los Terminos Term, Equation
+-- Definicion de los terminos Term, Equation, y tipos para Sust.
+-- Definicion de reglas de impresion.
 -- Autores:
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
@@ -25,12 +26,15 @@ data Term =  Var String
 ---------------------------------------------------------------
 -- Definicion de Equation
 
-data Equation = Eq Term Term 
+data Equation = Eq Term Term
 
 ---------------------------------------------------------------
 -- Definimos el alias para el tipo Sust
 
-type Sust = (Term,Term)
+type Sust  = (Term,Term)
+type Sust2 = (Term, Sust, Term)
+type Sust3 = (Term, Term, Sust, Term, Term)
+
 
 ---------------------------------------------------------------
 -- Funciones y Operadores
@@ -70,7 +74,7 @@ neg t1 = Neg t1
 (===) :: Term -> Term -> Equation
 (===) t1 t2 = Eq t1 t2
 
--- Operador Sustitucion 
+-- Operador Sustitucion
 (=:) :: Term -> Term -> Sust
 (=:) t1 t2 = (t1, t2)
 
@@ -225,17 +229,15 @@ instance Show Equation where show = showEquation
 -- Sustitution
 -- Muestra una representacion de las expresiones con =: en forma de string
 
-showSust :: Sust -> String
-showSust (term1,term2) = "( " ++ showTerm(term1) ++ " =: " ++ showTerm(term2) ++ " )"
+class ShowSust s where
+  showSust :: s -> String
 
-showSust2 :: (Term, Sust, Term) -> String
-showSust2 (term1, s, term2) = "( " ++ showTerm(term1) ++ "," ++ showSust(s) ++ "," ++ showTerm(term2) ++ " )"
+instance ShowSust Sust where
+  showSust (term1,term2) = "( " ++ showTerm(term1) ++ " =: " ++ showTerm(term2) ++ " )"
 
-showSust3 :: (Term, Term, Sust, Term, Term) -> String
-showSust3 (term1,term2, s, term3,term4) = "( " ++ showTerm(term1) ++ "," ++ showTerm(term2) ++ "," 
-												++ showSust(s) ++ "," ++ showTerm(term3) ++ ","++ showTerm(term4) ++ " )"
+instance ShowSust Sust2 where
+  showSust (term1, s, term2) = "( " ++ showTerm(term1) ++ "," ++ showSust(s) ++ "," ++ showTerm(term2) ++ " )"
 
-
-instance Show Sust where show = showSust
-instance Show (Term, Show, Term) where show = showSust2
-instance Show (Term, Term, Show, Term, Term) where show = showSust3
+instance ShowSust Sust3 where
+  showSust (term1,term2, s, term3,term4) = "( " ++ showTerm(term1) ++ "," ++ showTerm(term2) ++ ","
+												  ++ showSust(s) ++ "," ++ showTerm(term3) ++ ","++ showTerm(term4) ++ " )"
