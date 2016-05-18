@@ -56,7 +56,7 @@ false = Bool "false"
 
 -- Not
 neg :: Term -> Term
-neg t1 = Neg t1
+neg t = Neg t
 
 -- Implicacion
 (==>) :: Term -> Term -> Term
@@ -163,12 +163,13 @@ z = Var "z"
 -- Definimos la precedencia de los operadores
 
 infixl 9 `neg`
-infixl 3 /\
-infixl 3 \/
-infixr 2 ==>
-infixl 1 <==>
-infixl 1 !<==>
-infixl 0 ===
+infixl 4 /\
+infixl 4 \/
+infixr 3 ==>
+infixl 2 <==>
+infixl 2 !<==>
+infixl 1 ===
+infixl 0 =:
 
 ---------------------------------------------------------------
 -- Representacion en forma de String para los diferentes
