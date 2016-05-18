@@ -6,8 +6,6 @@
 -- Aldrix Marfil     10-10940
 -- Leonardo Martinez 11-10576
 
-module Rules where
-
 -- Modulos necesarios:
 -- Terms:    Contiene las definiciones de terminos, tipos y sus impresiones.
 -- Theorems: Contiene las definiciones de los teoremas y axiomas necesarios
