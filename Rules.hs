@@ -35,7 +35,7 @@ instance Sustitution Sust where
 
 instance Sustitution Sust2 where
 	-- caso base
-	sust (Var t) (x, (y,p), q) = if (Var t) ==  p then y else if (Var t) == q then x else (Var t)
+	sust (Var t) (x, (y,p), q) = if (Var t) ==  p then x else if (Var t) == q then y else (Var t)
 	sust (Bool b)   s    = Bool b
 	sust (Or t1 t2) s    = Or (sust t1 s) (sust t2 s)
 	sust (And t1 t2) s   = And (sust t1 s) (sust t2 s)
@@ -46,7 +46,7 @@ instance Sustitution Sust2 where
 
 instance Sustitution Sust3 where
 	-- caso base
-	sust (Var t) (x, y, (z,p), q, r) = if (Var t) == p then z else if (Var t) == q then y else if (Var t) == r then x else (Var t)
+	sust (Var t) (x, y, (z,p), q, r) = if (Var t) == p then x else if (Var t) == q then y else if (Var t) == r then z else (Var t)
 	sust (Bool b)   s    = Bool b
 	sust (Or t1 t2) s    = Or (sust t1 s) (sust t2 s)
 	sust (And t1 t2) s   = And (sust t1 s) (sust t2 s)
