@@ -1,6 +1,7 @@
 import Terms
 import Rules
 
+
 verify = let theorem = ( p \/ (q \/ r) === (p \/ q) \/ (p \/ r) ) in
          proof theorem
          >>=

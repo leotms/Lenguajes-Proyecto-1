@@ -1,6 +1,7 @@
 import Terms
 import Rules
 
+
 verify = let theorem = ( neg (neg p) === p ) in
          proof theorem
          >>=

@@ -1,0 +1,24 @@
+Guia de Corridas para los Casos de Prueba
+Teorema Correcto:   OK.
+Teorema Incorrecto: X
+-----------------------------------------
+3.5  | OK
+3.6  | X
+3.7  | OK
+3.11 | X
+3.12 | X
+3.13 | OK
+3.14 | OK
+3.15 | OK
+3.16 | X
+3.17 | X
+3.18 | OK
+3.19 | X
+3.20 | X
+3.21 | X
+3.22 | X
+3.23 | X
+3.29 | OK
+3.30 | OK
+3.31 | X
+3.32 | X

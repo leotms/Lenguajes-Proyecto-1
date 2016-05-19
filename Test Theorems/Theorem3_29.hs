@@ -1,6 +1,7 @@
 import Terms
 import Rules
 
+
 verify = let theorem = ( p \/ true === true ) in
          proof theorem
          >>=

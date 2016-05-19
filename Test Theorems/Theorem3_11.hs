@@ -1,6 +1,7 @@
 import Terms
 import Rules
 
+
 verify = let theorem = ( neg p === q <==> (p <==> neg q) ) in
          proof theorem
          >>=
