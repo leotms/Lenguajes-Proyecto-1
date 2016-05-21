@@ -12,5 +12,5 @@ Para que el proyecto funcione correctamente estos son los modulos a importar:
       import Rules
 
 **Autores:**
-* Aldrix Marfil.
-* Leonardo Martínez.
+* [Aldrix Marfil](https://github.com/aldrix/).
+* [Leonardo Martínez](https://github.com/leotms/).
